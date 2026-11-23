@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon, project_badge, project_cover, icon_buttons_row %}
+
+{% block content %}
+<section class="hero{% if profile_image_exists %} hero--photo{% endif %}" aria-label="Introduction">
+  <div class="hero-panels">
+    {% if profile_image_exists %}
+    <div class="hero-photo-panel">
+      <img
+        class="hero-photo-img"
+        src="{{ root }}static/images/{{ site.profile_image }}"
+        alt="{{ profile_meta.alt or ('Portrait of ' + site.display_name) }}"
+        width="{{ profile_meta.width or 1054 }}"
+        height="{{ profile_meta.height or 1456 }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    </div>
+    {% else %}
+    <div class="hero-black-panel">
+      <div class="portrait-wrap">
+        <div class="portrait-placeholder">
+          <div class="portrait-monogram-outline" aria-hidden="true">EA</div>
+          <p class="portrait-caption">Add profile.jpg to static/images/</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="hero-grey-panel">
+      <div class="container">
+        <div class="hero-copy">
+          <p class="hero-hi">Hi, I am</p>
+          <h1 class="hero-name">Eseoghene<br>Asisisi</h1>
+          <p class="hero-subtitle">{{ site.title }}</p>
+          <p class="hero-sentence">{{ site.hero_sentence }}</p>
+          <div class="btn-row hero-actions">
+            <a class="pill-btn pill-btn--black" href="{{ root }}projects.html">
+              <span>View projects</span>
+              {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
+            </a>
+            <a class="pill-btn pill-btn--outline-dark" href="{{ root }}contact.html">
+              <span>Contact me</span>
+            </a>
+          </div>
+          {{ icon_buttons_row(site) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 1. About section with subtle outlined ABOUT watermark behind text -->
+<section class="band band--grey about-band reveal-section" aria-labelledby="about-heading">
+  <div class="about-watermark" aria-hidden="true">ABOUT</div>
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <h2 id="about-heading" class="band-title">About me</h2>
+        <p>{{ site.about_short }}</p>
+        <p>{{ site.education.summary }}</p>
+        <p>
+          <a class="text-arrow-link" href="{{ root }}about.html">
+            <span>More about me</span>
+            {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
+          </a>
+        </p>
+      </div>
+
+      <div class="facts-stack" aria-label="Quick facts">
+        <div class="fact-block">
+          <span class="fact-big">5</span>
+          <span class="fact-label">projects on GitHub</span>
+        </div>
+        <div class="fact-block">
+          <span class="fact-big">4</span>
+          <span class="fact-label">core languages: HTML, CSS, Python, Java</span>
+        </div>
+        <div class="fact-block">
+          <span class="fact-big">Open</span>
+          <span class="fact-label">to freelance work</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Skills slanted black band -->
+<section class="band band--black reveal-section" aria-labelledby="skills-heading">
+  <div class="container">
+    <h2 id="skills-heading" class="band-title">Skills</h2>
+    <div class="skills-row">
+      {% for skill in site.skills %}
+      <article class="skill-tile">
+        <span class="skill-tile-icon">{{ svg_icon(skill.icon, "icon-lg") }}</span>
+        <h3>{{ skill.name }}</h3>
+        <p>{{ skill.description }}</p>
+        <span class="skill-proficiency">{{ skill.proficiency }}</span>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- 3. Experience section after Skills -->
+<section class="band band--surface reveal-section" aria-labelledby="experience-heading">
+  <div class="container">
+    <h2 id="experience-heading" class="band-title">Experience</h2>
+    <div class="exp-rows">
+      {% for item in site.experience %}
+      <article class="exp-row">
+        <div class="exp-row-head">
+          <h3 class="exp-org">{{ item.organisation }}</h3>
+          <span class="lang-badge lang-badge--light exp-status">
+            {{ svg_icon("circle-dot" if item.status == "Current" else "check-circle", "icon-sm") }}
+            <span>{{ item.status }}</span>
+          </span>
+        </div>
+        <p class="exp-role">{{ item.role }}</p>
+        {% if item.description %}
+        <p class="exp-desc">{{ item.description }}</p>
+        {% endif %}
+        {% if item.bullets %}
+        <ul class="exp-bullets">
+          {% for bullet in item.bullets %}
+          <li>{{ bullet }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    <p class="exp-more">
+      <a class="text-arrow-link" href="{{ root }}resume.html#experience-heading">
+        <span>Full experience</span>
+        {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- 4. Portfolio staggered grid on light grey -->
+<section class="band band--grey band--slant-top reveal-section" aria-labelledby="work-heading">
+  <div class="container">
+    <h2 id="work-heading" class="band-title">Selected work</h2>
+    <div class="stagger-grid">
+      {% for project in site.projects %}
+      <article class="proj-card{% if project.featured %} proj-card--featured{% endif %}">
+        <div class="proj-card-media">
+          <a href="{{ root }}projects/{{ project.slug }}.html" tabindex="-1" aria-hidden="true">
+            {{ project_cover(project, root) }}
+          </a>
+        </div>
+        <div class="proj-card-body">
+          <h3><a href="{{ root }}projects/{{ project.slug }}.html">{{ project.title }}</a></h3>
+          <p>{{ project.one_line_summary }}</p>
+          <div class="proj-card-foot">
+            {{ project_badge(project) }}
+            <div class="btn-row">
+              {% if project.live_url %}
+              <a class="pill-btn pill-btn--white" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">
+                {{ svg_icon("external", "icon-sm") }}
+                <span>{{ project.live_label or "View live" }}</span>
+              </a>
+              {% endif %}
+              {% if project.github_url %}
+              <a class="pill-btn pill-btn--outline-white" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
+                {{ svg_icon("github", "icon-sm") }}
+                <span>Source code</span>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- 4. Contact slanted black band -->
+<section class="contact-band reveal-section" aria-labelledby="home-contact-heading">
+  <div class="container">
+    <h2 id="home-contact-heading">Let's work together.</h2>
+    <p><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+    {{ icon_buttons_row(site) }}
+  </div>
+</section>
+{% endblock %}

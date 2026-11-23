@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon, project_badge, project_cover %}
+
+{% block content %}
+<section class="split-header" aria-label="Project overview">
+  <div class="split-header-panels">
+    <div class="split-header-black">
+      {{ project_cover(project, root) }}
+    </div>
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ root }}index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <a href="{{ root }}projects.html">Portfolio</a>
+            <span aria-hidden="true">/</span>
+            <span>{{ project.title }}</span>
+          </nav>
+
+          <p class="timeline-stage">Project {{ project.number }}</p>
+          <h1>{{ project.title }}</h1>
+          <p>{{ project.one_line_summary }}</p>
+
+          <dl class="detail-facts">
+            {% if project.role %}
+            <div>
+              <dt>Role</dt>
+              <dd>{{ project.role }}</dd>
+            </div>
+            {% endif %}
+            {% if project.tech_list %}
+            <div>
+              <dt>Tech</dt>
+              <dd>{{ project.tech_list | join(", ") }}</dd>
+            </div>
+            {% endif %}
+            {% if project.status %}
+            <div>
+              <dt>Status</dt>
+              <dd>{{ project.status }}</dd>
+            </div>
+            {% endif %}
+          </dl>
+
+          <div class="btn-row">
+            {% if project.live_url %}
+            <a class="pill-btn pill-btn--black" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">
+              {{ svg_icon("external", "icon-sm") }}
+              <span>{{ project.live_label or "View live" }}</span>
+            </a>
+            {% endif %}
+            {% if project.github_url %}
+            <a class="pill-btn pill-btn--outline-dark" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
+              {{ svg_icon("github", "icon-sm") }}
+              <span>Source code</span>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band--grey" aria-label="Project details">
+  <div class="container">
+    <div class="story-stack">
+      {% if project.problem %}
+      <section class="story-section">
+        <h2>The problem</h2>
+        <p>{{ project.problem }}</p>
+      </section>
+      {% endif %}
+
+      {% if project.what_i_built %}
+      <section class="story-section">
+        <h2>What I built</h2>
+        <p>{{ project.what_i_built }}</p>
+      </section>
+      {% endif %}
+
+      {% if project.what_i_learned %}
+      <section class="story-section">
+        <h2>What I learned</h2>
+        <p>{{ project.what_i_learned }}</p>
+      </section>
+      {% endif %}
+    </div>
+
+    <nav class="pager-row" aria-label="Adjacent projects">
+      {% if prev_project %}
+      <a class="pager-card" href="{{ root }}projects/{{ prev_project.slug }}.html">
+        {{ svg_icon("arrow-left") }}
+        <span>
+          <span class="pager-label">Previous project</span>
+          <span class="pager-title">{{ prev_project.title }}</span>
+        </span>
+      </a>
+      {% else %}
+      <div></div>
+      {% endif %}
+
+      {% if next_project %}
+      <a class="pager-card pager-card--next" href="{{ root }}projects/{{ next_project.slug }}.html">
+        <span>
+          <span class="pager-label">Next project</span>
+          <span class="pager-title">{{ next_project.title }}</span>
+        </span>
+        {{ svg_icon("arrow-right") }}
+      </a>
+      {% endif %}
+    </nav>
+  </div>
+</section>
+{% endblock %}

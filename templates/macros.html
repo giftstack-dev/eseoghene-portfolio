@@ -1,0 +1,95 @@
+{# Reusable two-tone diagonal portfolio macros: icons, language badges, screenshot/diagram covers, action buttons, and square social links #}
+
+{% macro svg_icon(name, extra_class="") %}
+<svg class="icon{% if extra_class %} {{ extra_class }}{% endif %}" aria-hidden="true">
+  <use href="#icon-{{ name }}"></use>
+</svg>
+{% endmacro %}
+
+{% macro project_badge(project, light=false) %}
+  {% set badge_class = "lang-badge lang-badge--light" if light else "lang-badge" %}
+  {% if project.badge == "Python" or project.category == "python" %}
+    <span class="{{ badge_class }}">
+      {{ svg_icon("terminal", "icon-sm") }}
+      <span>Python</span>
+    </span>
+  {% elif project.badge == "HTML and CSS" or project.category == "html-css" %}
+    <span class="{{ badge_class }}">
+      {{ svg_icon("code", "icon-sm") }}
+      <span>HTML and CSS</span>
+    </span>
+  {% elif project.slug == "ci-cd-pipeline-showcase" %}
+    <span class="{{ badge_class }}">
+      {{ svg_icon("git-branch", "icon-sm") }}
+      <span>Other</span>
+    </span>
+  {% elif project.slug == "Vybe" %}
+    <span class="{{ badge_class }}">
+      {{ svg_icon("music", "icon-sm") }}
+      <span>Other</span>
+    </span>
+  {% else %}
+    <span class="{{ badge_class }}">
+      {{ svg_icon("tag", "icon-sm") }}
+      <span>{{ project.badge or "Other" }}</span>
+    </span>
+  {% endif %}
+{% endmacro %}
+
+{% macro project_cover(project, root) %}
+  {% if project.cover_type == "diagram" %}
+  <figure class="diagram-figure">
+    <img
+      class="diagram-img"
+      src="{{ root }}static/images/{{ project.resolved_image }}"
+      alt="{{ project.image_alt }}"
+      width="{{ project.image_width }}"
+      height="{{ project.image_height }}"
+      loading="lazy"
+    >
+    <figcaption class="diagram-caption">{{ project.caption or "Pipeline diagram" }}</figcaption>
+  </figure>
+  {% else %}
+  <div class="browser-frame">
+    <div class="browser-chrome" aria-hidden="true">
+      <span class="browser-dot"></span>
+      <span class="browser-dot"></span>
+      <span class="browser-dot"></span>
+      <span class="browser-title">{{ project.title }}</span>
+    </div>
+    <img
+      class="browser-img"
+      src="{{ root }}static/images/{{ project.resolved_image }}"
+      alt="{{ project.image_alt }}"
+      width="{{ project.image_width }}"
+      height="{{ project.image_height }}"
+      loading="lazy"
+    >
+  </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro icon_buttons_row(site) %}
+<div class="icon-square-row">
+  {% if site.email %}
+  <a class="icon-square" href="mailto:{{ site.email }}" aria-label="Email {{ site.display_name }}">
+    {{ svg_icon("mail") }}
+  </a>
+  {% endif %}
+  {% if site.github %}
+  <a class="icon-square" href="{{ site.github }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile ({{ site.handle }})">
+    {{ svg_icon("github") }}
+  </a>
+  {% endif %}
+  {% if site.linkedin %}
+  <a class="icon-square" href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+    {{ svg_icon("linkedin") }}
+  </a>
+  {% endif %}
+  {% if site.upwork %}
+  <a class="icon-square" href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer" aria-label="Upwork profile">
+    {{ svg_icon("briefcase") }}
+  </a>
+  {% endif %}
+</div>
+{% endmacro %}

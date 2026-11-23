@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon, project_badge, project_cover %}
+
+{% block content %}
+<section class="split-header" aria-label="Portfolio header">
+  <div class="split-header-panels">
+    <div class="split-header-black">
+      <span class="split-big-num" aria-hidden="true">05</span>
+    </div>
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ root }}index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>Portfolio</span>
+          </nav>
+          <h1>Portfolio</h1>
+          <p>Things I've built with Python, HTML and CSS.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band--grey" aria-label="Filterable project list">
+  <div class="container">
+    <input class="visually-hidden" type="radio" name="project-filter" id="filter-all" checked>
+    <input class="visually-hidden" type="radio" name="project-filter" id="filter-python">
+    <input class="visually-hidden" type="radio" name="project-filter" id="filter-html-css">
+    <input class="visually-hidden" type="radio" name="project-filter" id="filter-other">
+
+    <div class="filter-pills" role="group" aria-label="Filter projects by stack">
+      <label class="filter-pill" for="filter-all">All ({{ site.projects | length }})</label>
+      <label class="filter-pill" for="filter-python">Python ({{ category_counts.python }})</label>
+      <label class="filter-pill" for="filter-html-css">HTML and CSS ({{ category_counts['html-css'] }})</label>
+      <label class="filter-pill" for="filter-other">Other ({{ category_counts.other }})</label>
+    </div>
+
+    <div class="alt-rows">
+      {% for project in site.projects %}
+      <article class="alt-row{% if loop.index is even %} alt-row--reverse{% endif %}" data-category="{{ project.category }}">
+        <div class="alt-row-cover">
+          <a href="{{ root }}projects/{{ project.slug }}.html" tabindex="-1" aria-hidden="true">
+            {{ project_cover(project, root) }}
+          </a>
+        </div>
+        <div class="alt-row-body">
+          <span class="alt-row-num">{{ project.number or ("%02d" | format(loop.index)) }}</span>
+          {{ project_badge(project) }}
+          <h2><a href="{{ root }}projects/{{ project.slug }}.html">{{ project.title }}</a></h2>
+          <p>{{ project.one_line_summary }}</p>
+          {% if project.tech_list %}
+          <ul class="tech-chips" aria-label="Technologies used in {{ project.title }}">
+            {% for tech in project.tech_list %}
+            <li class="tech-chip">{{ tech }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          <div class="btn-row">
+            {% if project.live_url %}
+            <a class="pill-btn pill-btn--white" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">
+              {{ svg_icon("external", "icon-sm") }}
+              <span>{{ project.live_label or "View live" }}</span>
+            </a>
+            {% endif %}
+            {% if project.github_url %}
+            <a class="pill-btn pill-btn--outline-white" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
+              {{ svg_icon("github", "icon-sm") }}
+              <span>Source code</span>
+            </a>
+            {% endif %}
+            <a class="card-link-white" href="{{ root }}projects/{{ project.slug }}.html">
+              <span>Project details</span>
+              {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
+            </a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

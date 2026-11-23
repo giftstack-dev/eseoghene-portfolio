@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon %}
+
+{% block content %}
+<section class="split-header" aria-label="Skills header">
+  <div class="split-header-panels">
+    <div class="split-header-black">
+      <h1>Skills</h1>
+    </div>
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ root }}index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>Skills</span>
+          </nav>
+          <p class="hero-hi">Languages &amp; tools</p>
+          <p>The core languages I use daily to build web pages and Python applications, alongside tools for testing and deployment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band--grey" aria-labelledby="core-languages-heading">
+  <div class="container">
+    <h2 id="core-languages-heading" class="band-title">Core languages</h2>
+    <div class="skill-detail-list">
+      {% for skill in site.skills %}
+      <article class="skill-detail-card">
+        <div class="skill-detail-head">
+          <h3>{{ skill.name }}</h3>
+          <span class="lang-badge lang-badge--light">
+            {{ svg_icon(skill.icon, "icon-sm") }}
+            <span>{{ skill.proficiency }}</span>
+          </span>
+        </div>
+        <p>{{ skill.description }}</p>
+        {% if skill.project_slugs %}
+        <div class="skill-project-links">
+          {% for slug in skill.project_slugs %}
+            {% if slug in projects_by_slug %}
+              {% set p = projects_by_slug[slug] %}
+              <a class="text-arrow-link" href="{{ root }}projects/{{ p.slug }}.html">
+                <span>{{ p.title }}</span>
+                {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="band band--black" aria-labelledby="tools-heading">
+  <div class="container">
+    <h2 id="tools-heading" class="band-title">Tools &amp; frameworks</h2>
+    <ul class="tech-chips" aria-label="Tools and technologies">
+      {% for tool in site.tools %}
+      <li class="tech-chip">{{ tool }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon %}
+
+{% block content %}
+<section class="split-header not-found-split" aria-label="Page not found">
+  <div class="split-header-panels">
+    <div class="split-header-black">
+      <span class="split-big-num" aria-hidden="true">404</span>
+    </div>
+
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <p class="not-found-num" aria-hidden="true">404</p>
+          <h1>Page not found</h1>
+          <p>The page you requested does not exist or may have moved.</p>
+          <div class="btn-row">
+            <a class="pill-btn pill-btn--black" href="{{ root }}index.html">
+              {{ svg_icon("arrow-left", "icon-sm") }}
+              <span>Back home</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

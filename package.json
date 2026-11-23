@@ -1,0 +1,12 @@
+{
+  "name": "giftstack-dev-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "sh -c 'npm run build && exec python3 -m http.server 3000 --directory dist --bind 0.0.0.0' _",
+    "build": "sh -c 'PYTHONPATH=/tmp/pydeps python3 -c \"import jinja2\" 2>/dev/null || printf \"%s\\n\" \"import io,json,platform,sys,urllib.request,zipfile\" \"from pathlib import Path\" \"d=Path(\\\"/tmp/pydeps\\\"); d.mkdir(parents=True,exist_ok=True)\" \"t=f\\\"cp{sys.version_info.major}{sys.version_info.minor}\\\"; a=platform.machine()\" \"for p,v in [(\\\"MarkupSafe\\\",\\\"2.1.5\\\"),(\\\"Jinja2\\\",\\\"3.1.4\\\")]:\" \" urls=[u[\\\"url\\\"] for u in json.loads(urllib.request.urlopen(f\\\"https://pypi.org/pypi/{p}/{v}/json\\\",timeout=10).read())[\\\"urls\\\"] if u[\\\"packagetype\\\"]==\\\"bdist_wheel\\\"]\" \" u=next((x for x in urls if \\\"py3-none-any\\\" in x),None) or next(x for x in urls if t in x and \\\"manylinux\\\" in x and a in x)\" \" zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(u,timeout=15).read())).extractall(d)\" | python3 -; PYTHONPATH=/tmp/pydeps python3 build.py'",
+    "preview": "python3 -m http.server 3000 --directory dist --bind 0.0.0.0",
+    "clean": "rm -rf dist",
+    "lint": "sh -c 'PYTHONPATH=/tmp/pydeps python3 -c \"import jinja2,pytest\" 2>/dev/null || printf \"%s\\n\" \"import io,json,platform,sys,urllib.request,zipfile\" \"from pathlib import Path\" \"d=Path(\\\"/tmp/pydeps\\\"); d.mkdir(parents=True,exist_ok=True)\" \"t=f\\\"cp{sys.version_info.major}{sys.version_info.minor}\\\"; a=platform.machine()\" \"for p,v in [(\\\"MarkupSafe\\\",\\\"2.1.5\\\"),(\\\"Jinja2\\\",\\\"3.1.4\\\"),(\\\"iniconfig\\\",\\\"\\\"),(\\\"packaging\\\",\\\"\\\"),(\\\"pluggy\\\",\\\"\\\"),(\\\"pygments\\\",\\\"\\\"),(\\\"pytest\\\",\\\"\\\")]:\" \" urls=[u[\\\"url\\\"] for u in json.loads(urllib.request.urlopen(f\\\"https://pypi.org/pypi/{p}/{v}/json\\\" if v else f\\\"https://pypi.org/pypi/{p}/json\\\",timeout=10).read())[\\\"urls\\\"] if u[\\\"packagetype\\\"]==\\\"bdist_wheel\\\"]\" \" u=next((x for x in urls if \\\"py3-none-any\\\" in x),None) or next(x for x in urls if t in x and \\\"manylinux\\\" in x and a in x)\" \" zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(u,timeout=15).read())).extractall(d)\" | python3 -; PYTHONPATH=/tmp/pydeps:. python3 -m pytest -v'"
+  }
+}

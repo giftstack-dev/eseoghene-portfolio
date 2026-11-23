@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon %}
+
+{% block content %}
+<section class="split-header{% if profile_image_exists %} split-header--photo{% endif %}" aria-label="About header">
+  <div class="split-header-panels">
+    {% if profile_image_exists %}
+    <div class="split-header-photo">
+      <img
+        class="hero-photo-img"
+        src="{{ root }}static/images/{{ site.profile_image }}"
+        alt="{{ profile_meta.alt or ('Portrait of ' + site.display_name) }}"
+        width="{{ profile_meta.width or 1054 }}"
+        height="{{ profile_meta.height or 1456 }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    </div>
+    {% else %}
+    <div class="split-header-black">
+      <div class="portrait-wrap">
+        <div class="portrait-placeholder">
+          <div class="portrait-monogram-outline" aria-hidden="true">EA</div>
+          <p class="portrait-caption">Add profile.jpg to static/images/</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ root }}index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>About me</span>
+          </nav>
+          <h1>About me</h1>
+          {% for paragraph in site.about_story %}
+          <p>{{ paragraph | replace("Gift-Asisisi", "Gift\u2011Asisisi") }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band--grey" aria-labelledby="education-heading">
+  <div class="container">
+    <h2 id="education-heading" class="band-title">Education</h2>
+    <div class="education-card">
+      <div class="education-copy">
+        <h3>{{ site.education.degree }}</h3>
+        <p>{{ site.education.summary }}</p>
+      </div>
+    </div>
+
+    <h2 id="timeline-heading" class="band-title">Timeline</h2>
+    <ol class="timeline">
+      {% for item in site.timeline %}
+      <li class="timeline-item">
+        <p class="timeline-stage">{{ item.stage }}</p>
+        <h3>{{ item.title }}</h3>
+        {% if item.place %}
+        <p>{{ item.place }}</p>
+        {% endif %}
+        <p>{{ item.summary }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="band band--black" aria-labelledby="how-i-work-heading">
+  <div class="container">
+    <h2 id="how-i-work-heading" class="band-title">How I work</h2>
+    <ol class="steps-3">
+      <li class="step-box">
+        <span class="step-box-num">01</span>
+        <h3>Plan</h3>
+        <p>Define the core problem, organize the data structure, and keep scope focused before writing code.</p>
+      </li>
+      <li class="step-box">
+        <span class="step-box-num">02</span>
+        <h3>Build and test</h3>
+        <p>Write clean, readable code and verify behaviour with automated tests and multi-viewport checks.</p>
+      </li>
+      <li class="step-box">
+        <span class="step-box-num">03</span>
+        <h3>Review before it ships</h3>
+        <p>Inspect every page, link, and edge case so each update is ready to deploy cleanly.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+{% endblock %}

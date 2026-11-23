@@ -1,0 +1,235 @@
+{
+  "name": "Eseoghene Gift-Asisisi Asisisi",
+  "display_name": "Eseoghene Asisisi",
+  "handle": "giftstack-dev",
+  "title": "Software Engineering Graduate / Web Developer",
+  "university": "Southern Delta University",
+  "location": "",
+  "email": "ese.dev13@gmail.com",
+  "github": "https://github.com/giftstack-dev",
+  "linkedin": "https://www.linkedin.com/in/eseoghene-asisisi-99b378397",
+  "upwork": "",
+  "cv_link": "",
+  "profile_image": "profile.jpg",
+  "site_url": "https://giftstack-dev.github.io",
+  "hero_sentence": "I build websites and web apps with Python, HTML and CSS, and I test everything I ship.",
+  "about_short": "I am a software engineering graduate of Southern Delta University. I build websites and web applications with Python, HTML, and CSS, and I test everything I ship.",
+  "about_story": [
+    "I am Eseoghene Gift-Asisisi Asisisi (GitHub: giftstack-dev), a software engineering graduate of Southern Delta University.",
+    "Across five public repositories, I have built personal finance software with Python, pure HTML and CSS business templates, a custom fashion atelier site, a music player web app, and an automated GitHub Actions pipeline.",
+    "I continue to expand my work with Python, HTML, and CSS while learning Java on my own.",
+    "I use AI tools as a secondary aid for routine work. I write, review and test the code myself."
+  ],
+  "education": {
+    "degree": "B.Sc. Software Engineering",
+    "honours": "Second Class Honours (Upper Division)",
+    "cgpa": "4.30",
+    "institution": "Southern Delta University",
+    "summary": "B.Sc. Software Engineering, Southern Delta University. Graduated with Second Class Honours (Upper Division), CGPA 4.30."
+  },
+  "experience": [
+    {
+      "role": "AI and Data Intern and Substitute Tutor",
+      "organisation": "Delta State Innovation Hub",
+      "status": "Current",
+      "description": "I work side by side with the Data and AI supervisor and the Software Engineering department on the SCORE 360 project.",
+      "bullets": []
+    },
+    {
+      "role": "Software Engineering Intern",
+      "organisation": "Cavista Technologies",
+      "status": "Previous",
+      "description": "",
+      "bullets": [
+        "Gained hands-on experience contributing to real-world software projects in a professional engineering environment.",
+        "Collaborated with team members on development tasks, applying and strengthening core programming and tooling skills."
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "stage": "Current",
+      "title": "Delta State Innovation Hub",
+      "summary": "AI and Data Intern and Substitute Tutor. I work side by side with the Data and AI supervisor and the Software Engineering department on the SCORE 360 project."
+    },
+    {
+      "stage": "Previous",
+      "title": "Cavista Technologies",
+      "summary": "Software Engineering Intern. Gained hands-on experience contributing to real-world software projects in a professional engineering environment. Collaborated with team members on development tasks, applying and strengthening core programming and tooling skills."
+    },
+    {
+      "stage": "Education",
+      "title": "Southern Delta University",
+      "summary": "B.Sc. Software Engineering, Southern Delta University. Graduated with Second Class Honours (Upper Division), CGPA 4.30."
+    },
+    {
+      "stage": "Self-taught, learning",
+      "title": "Learning Java on my own",
+      "summary": "Learning Java on my own."
+    }
+  ],
+  "response_time_note": "I typically reply to emails and LinkedIn messages within 24 to 48 hours.",
+  "skills": [
+    {
+      "name": "HTML",
+      "proficiency": "Daily use",
+      "description": "Structuring semantic, accessible web pages with clear headings, navigation, and clean forms.",
+      "icon": "code",
+      "project_slugs": ["budget-buddy", "easy-to-use-template"]
+    },
+    {
+      "name": "CSS",
+      "proficiency": "Daily use",
+      "description": "Crafting responsive layouts, typography, spacing, and interactive controls without heavy frameworks.",
+      "icon": "layers",
+      "project_slugs": ["budget-buddy", "easy-to-use-template"]
+    },
+    {
+      "name": "Python",
+      "proficiency": "Building projects",
+      "description": "Developing backend applications, data models, static site generators, and automated test suites.",
+      "icon": "terminal",
+      "project_slugs": ["budget-buddy"]
+    },
+    {
+      "name": "Java",
+      "proficiency": "Self-taught, learning",
+      "description": "Learning Java on my own.",
+      "icon": "cpu",
+      "project_slugs": []
+    }
+  ],
+  "tools": [
+    "Git",
+    "GitHub",
+    "GitHub Actions",
+    "FastAPI",
+    "Jinja2",
+    "SQLAlchemy",
+    "SQLite",
+    "PostgreSQL",
+    "pytest"
+  ],
+  "projects": [
+    {
+      "number": "01",
+      "slug": "budget-buddy",
+      "title": "Budget Buddy",
+      "category": "python",
+      "badge": "Python",
+      "one_line_summary": "A personal money planner for salary earners in Nigeria.",
+      "problem": "Salary earners need a structured way to plan monthly and yearly income around essential needs first, track daily spending, and avoid floating-point rounding errors in currency math.",
+      "what_i_built": "A Python web application with registration, a needs-first monthly and yearly plan, a daily spending log, weekly and monthly feedback, and a demo account. Money is handled as whole kobo (integers) and the code has an automated test suite.",
+      "tech_list": [
+        "Python",
+        "FastAPI",
+        "Jinja2",
+        "SQLAlchemy",
+        "SQLite",
+        "PostgreSQL",
+        "HTML",
+        "CSS"
+      ],
+      "role": "Solo developer",
+      "what_i_learned": "Handling money as whole kobo integers eliminates rounding drift, and backing features with an automated test suite makes every change safe to ship.",
+      "github_url": "https://github.com/giftstack-dev/budget-buddy",
+      "live_url": "https://debudgetbuddy.netlify.app",
+      "live_label": "Live demo",
+      "screenshot": "budget-buddy-dashboard.png",
+      "cover_type": "screenshot",
+      "status": "Live demo and repository",
+      "featured": true
+    },
+    {
+      "number": "02",
+      "slug": "ci-cd-pipeline-showcase",
+      "title": "CI/CD Pipeline Showcase",
+      "category": "other",
+      "badge": "Other",
+      "one_line_summary": "Automatically tests, builds and deploys code on every push using GitHub Actions.",
+      "problem": "",
+      "what_i_built": "A project that automatically tests, builds and deploys code on every push using GitHub Actions.",
+      "tech_list": [
+        "GitHub Actions",
+        "TypeScript"
+      ],
+      "role": "",
+      "what_i_learned": "",
+      "github_url": "https://github.com/giftstack-dev/ci-cd-pipeline-showcase",
+      "live_url": "",
+      "live_label": "",
+      "screenshot": "ci-cd-pipeline-diagram.png",
+      "cover_type": "diagram",
+      "caption": "Pipeline diagram",
+      "status": "Repository available on GitHub",
+      "featured": false
+    },
+    {
+      "number": "03",
+      "slug": "easy-to-use-template",
+      "title": "Frontdoor Templates",
+      "category": "html-css",
+      "badge": "HTML and CSS",
+      "one_line_summary": "Ready-made landing page templates for Nigerian small businesses and agencies, built in pure HTML and CSS with no JavaScript and WhatsApp sales channels built into the layouts.",
+      "problem": "",
+      "what_i_built": "Frontdoor.NG provides ready-made landing page templates for Nigerian small businesses and agencies, built in pure HTML and CSS with no JavaScript and direct WhatsApp sales channels built into the layouts.",
+      "tech_list": [
+        "HTML",
+        "CSS"
+      ],
+      "role": "",
+      "what_i_learned": "",
+      "github_url": "https://github.com/giftstack-dev/easy-to-use-template",
+      "live_url": "https://frontdoortemplates.netlify.app",
+      "live_label": "View live",
+      "screenshot": "frontdoor-home.png",
+      "cover_type": "screenshot",
+      "status": "Live site and repository",
+      "featured": false
+    },
+    {
+      "number": "04",
+      "slug": "FashionHub",
+      "title": "FashionHub",
+      "category": "other",
+      "badge": "Other",
+      "one_line_summary": "A website for Sarah Skye Collection, a bespoke fashion and tailoring brand based in Delta State, Nigeria, with an online atelier, a collection, pricing, and fitting booking pages.",
+      "problem": "",
+      "what_i_built": "A website built for Sarah Skye Collection in Delta State, Nigeria, featuring an online atelier, a collection showcase, pricing, and fitting booking pages.",
+      "tech_list": [
+        "TypeScript"
+      ],
+      "role": "",
+      "what_i_learned": "",
+      "github_url": "https://github.com/giftstack-dev/FashionHub",
+      "live_url": "https://sarahfashionhub.netlify.app",
+      "live_label": "View live",
+      "screenshot": "fashionhub-home.png",
+      "cover_type": "screenshot",
+      "status": "Live site and repository",
+      "featured": false
+    },
+    {
+      "number": "05",
+      "slug": "Vybe",
+      "title": "Vybe",
+      "category": "other",
+      "badge": "Other",
+      "one_line_summary": "A next-generation music player that plays trending music from the Audius network or audio files from the user's own device, with synchronized lyrics and selectable themes.",
+      "problem": "",
+      "what_i_built": "A music player web app that streams trending tracks from the Audius network or plays audio files from the user's own device, paired with synchronized lyrics and selectable themes.",
+      "tech_list": [
+        "TypeScript"
+      ],
+      "role": "",
+      "what_i_learned": "",
+      "github_url": "https://github.com/giftstack-dev/Vybe",
+      "live_url": "https://thevybeplayer.netlify.app",
+      "live_label": "View live",
+      "screenshot": "vybe-home.png",
+      "cover_type": "screenshot",
+      "status": "Live app and repository",
+      "featured": false
+    }
+  ]
+}

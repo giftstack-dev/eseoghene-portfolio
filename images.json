@@ -1,0 +1,51 @@
+{
+  "profile.jpg": {
+    "filename": "profile.jpg",
+    "width": 1054,
+    "height": 1456,
+    "type": "portrait",
+    "placement": "Home hero right side and About header right side",
+    "alt": "Portrait of Eseoghene Asisisi"
+  },
+  "budget-buddy-dashboard.png": {
+    "filename": "budget-buddy-dashboard.png",
+    "width": 1811,
+    "height": 929,
+    "type": "screenshot",
+    "placement": "Budget Buddy card and detail cover",
+    "alt": "Budget Buddy dashboard showing pay period summary, spending guidance, safe daily spend, and payday countdown"
+  },
+  "ci-cd-pipeline-diagram.png": {
+    "filename": "ci-cd-pipeline-diagram.png",
+    "width": 1920,
+    "height": 1072,
+    "type": "diagram",
+    "placement": "CI/CD Pipeline Showcase card and detail cover",
+    "caption": "Pipeline diagram",
+    "alt": "GitHub Actions pipeline diagram showing automatic Push, Test, Build, Deploy, and Live stages on every push"
+  },
+  "frontdoor-home.png": {
+    "filename": "frontdoor-home.png",
+    "width": 1816,
+    "height": 930,
+    "type": "screenshot",
+    "placement": "Frontdoor Templates card and detail cover",
+    "alt": "Frontdoor.NG landing page showing pure HTML and CSS templates for Nigerian small businesses and agencies"
+  },
+  "fashionhub-home.png": {
+    "filename": "fashionhub-home.png",
+    "width": 1811,
+    "height": 851,
+    "type": "screenshot",
+    "placement": "FashionHub card and detail cover",
+    "alt": "Sarah Skye Collection home page for bespoke fashion design and made-to-measure tailoring in Delta State, Nigeria"
+  },
+  "vybe-home.png": {
+    "filename": "vybe-home.png",
+    "width": 1813,
+    "height": 931,
+    "type": "screenshot",
+    "placement": "Vybe card and detail cover",
+    "alt": "Vybe music player home screen showing Audius trending discovery, local audio upload, and theme switcher"
+  }
+}

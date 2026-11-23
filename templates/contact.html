@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon %}
+
+{% block content %}
+<section class="split-header" aria-label="Contact header">
+  <div class="split-header-panels">
+    <div class="split-header-black">
+      <div>
+        {% if site.email %}
+        <p><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+        {% endif %}
+        <div class="btn-row">
+          {% if site.github %}
+          <a class="pill-btn pill-btn--white" href="{{ site.github }}" target="_blank" rel="noopener noreferrer">
+            {{ svg_icon("github", "icon-sm") }}
+            <span>GitHub</span>
+          </a>
+          {% endif %}
+          {% if site.linkedin %}
+          <a class="pill-btn pill-btn--outline-white" href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer">
+            {{ svg_icon("linkedin", "icon-sm") }}
+            <span>LinkedIn</span>
+          </a>
+          {% endif %}
+          {% if site.upwork %}
+          <a class="pill-btn pill-btn--outline-white" href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer">
+            {{ svg_icon("briefcase", "icon-sm") }}
+            <span>Upwork</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ root }}index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>Contact</span>
+          </nav>
+          <h1>Let's talk</h1>
+          <p>{{ site.response_time_note }}</p>
+          <p>Open to web development roles, freelance projects, and open-source collaboration.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

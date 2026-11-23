@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% from "macros.html" import svg_icon %}
+
+{% block content %}
+<section class="split-header" aria-label="Resume header">
+  <div class="split-header-panels">
+    <div class="split-header-black">
+      <div>
+        {% if site.cv_link %}
+        <a class="pill-btn pill-btn--white" href="{{ site.cv_link }}" target="_blank" rel="noopener noreferrer">
+          {{ svg_icon("download", "icon-sm") }}
+          <span>Download CV</span>
+        </a>
+        {% else %}
+        <span class="lang-badge">CV coming soon</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="split-header-grey">
+      <div class="container">
+        <div class="split-header-grey-inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ root }}index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>Resume</span>
+          </nav>
+          <h1>Resume</h1>
+          <p>{{ site.name | replace("-", "\u2011") }} &middot; {{ site.title }}</p>
+          {% if site.location %}
+          <p>{{ site.location }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band--grey" aria-label="Resume details">
+  <div class="container">
+    <div class="story-stack">
+      <section class="resume-panel">
+        <h2>Summary</h2>
+        <p>{{ site.about_short }}</p>
+      </section>
+
+      <section class="resume-panel" aria-labelledby="experience-heading">
+        <h2 id="experience-heading">Experience</h2>
+        <div class="resume-exp-list">
+          {% for item in site.experience %}
+          <article class="resume-exp-item">
+            <div class="resume-exp-head">
+              <div>
+                <h3>{{ item.role }}</h3>
+                <p class="resume-exp-org">{{ item.organisation }}</p>
+              </div>
+              <span class="lang-badge lang-badge--light exp-status">
+                {{ svg_icon("circle-dot" if item.status == "Current" else "check-circle", "icon-sm") }}
+                <span>{{ item.status }}</span>
+              </span>
+            </div>
+            {% if item.description %}
+            <p>{{ item.description }}</p>
+            {% endif %}
+            {% if item.bullets %}
+            <ul class="exp-bullets">
+              {% for bullet in item.bullets %}
+              <li>{{ bullet }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="resume-panel" aria-labelledby="resume-education-heading">
+        <h2 id="resume-education-heading">Education</h2>
+        <p>{{ site.education.summary }}</p>
+      </section>
+
+      <section class="resume-panel">
+        <h2>Skills</h2>
+        <ul class="tech-chips">
+          {% for skill in site.skills %}
+          <li class="tech-chip tech-chip--light">{{ skill.name }} &mdash; {{ skill.proficiency }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="resume-panel">
+        <h2>Projects</h2>
+        <ul class="resume-projects">
+          {% for project in site.projects %}
+          <li>
+            <p>
+              <a href="{{ root }}projects/{{ project.slug }}.html">{{ project.title }}</a> &mdash; {{ project.one_line_summary }}
+            </p>
+            <div class="btn-row">
+              {% if project.live_url %}
+              <a class="text-arrow-link" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">
+                <span>{{ project.live_label or "View live" }}</span>
+                {{ svg_icon("external", "icon-sm") }}
+              </a>
+              {% endif %}
+              {% if project.github_url %}
+              <a class="text-arrow-link" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
+                <span>Source code</span>
+                {{ svg_icon("github", "icon-sm") }}
+              </a>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}
