@@ -13,7 +13,7 @@
           <p class="contact-email-wrap"><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
           {% endif %}
           {% if site.cv_link %}
-          {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+          {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://', '/')) else ('/' ~ site.cv_link) %}
           <a class="btn contact-cv-link" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" type="application/pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
             {{ svg_icon("download", "icon-sm") }}
             <span>Download my CV</span>
@@ -48,7 +48,7 @@
       <div class="container">
         <div class="split-header-grey-inner">
           <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="{{ root }}index.html">Home</a>
+            <a href="/">Home</a>
             <span aria-hidden="true">/</span>
             <span>Contact</span>
           </nav>

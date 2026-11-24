@@ -12,7 +12,7 @@
       <div class="container">
         <div class="split-header-grey-inner">
           <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="{{ root }}index.html">Home</a>
+            <a href="/">Home</a>
             <span aria-hidden="true">/</span>
             <span>Skills</span>
           </nav>
@@ -43,7 +43,7 @@
           {% for slug in skill.project_slugs %}
             {% if slug in projects_by_slug %}
               {% set p = projects_by_slug[slug] %}
-              <a class="text-arrow-link" href="{{ root }}projects/{{ p.slug }}.html">
+              <a class="text-arrow-link" href="/projects/{{ p.slug }}/">
                 <span>{{ p.title }}</span>
                 {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
               </a>

@@ -14,9 +14,9 @@
       <div class="container">
         <div class="split-header-grey-inner">
           <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="{{ root }}index.html">Home</a>
+            <a href="/">Home</a>
             <span aria-hidden="true">/</span>
-            <a href="{{ root }}projects.html">Portfolio</a>
+            <a href="/projects/">Portfolio</a>
             <span aria-hidden="true">/</span>
             <span>{{ project.title }}</span>
           </nav>
@@ -93,7 +93,7 @@
 
     <nav class="pager-row" aria-label="Adjacent projects">
       {% if prev_project %}
-      <a class="pager-card" href="{{ root }}projects/{{ prev_project.slug }}.html">
+      <a class="pager-card" href="/projects/{{ prev_project.slug }}/">
         <span class="pager-card-bg" aria-hidden="true"></span>
         {{ svg_icon("arrow-left") }}
         <span class="pager-text">
@@ -106,7 +106,7 @@
       {% endif %}
 
       {% if next_project %}
-      <a class="pager-card pager-card--next" href="{{ root }}projects/{{ next_project.slug }}.html">
+      <a class="pager-card pager-card--next" href="/projects/{{ next_project.slug }}/">
         <span class="pager-card-bg pager-card-bg--next" aria-hidden="true"></span>
         <span class="pager-text">
           <span class="pager-label">Next project</span>

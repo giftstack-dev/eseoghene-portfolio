@@ -1,6 +1,6 @@
 # Developer Portfolio — Eseoghene Gift-Asisisi Asisisi (`giftstack-dev`)
 
-A static personal developer portfolio built with Python, Jinja2, HTML5, and CSS3. It compiles `data/site.json` and the templates in `templates/` into a plain, dependency-free `dist/` folder that works by opening `dist/index.html` directly in a browser or hosting on GitHub Pages.
+A static personal developer portfolio built with Python, Jinja2, HTML5, and CSS3. It compiles `data/site.json` and the templates in `templates/` into a plain, dependency-free `dist/` folder using clean URLs for Netlify and local HTTP preview.
 
 ## Features
 
@@ -29,7 +29,13 @@ pip install -r py-requirements.txt
 python build.py
 ```
 
-After running `python build.py`, open `dist/index.html` directly in your browser.
+After running `python build.py`, preview locally with:
+
+```bash
+python -m http.server 8000 --directory dist
+```
+
+Then open `http://localhost:8000` in your browser.
 
 ## How to edit `data/site.json`
 
@@ -43,7 +49,7 @@ All personal details, skills, and projects live in `data/site.json`:
 
 1. Save a screenshot image (for example `my-project.png`) inside `static/images/`.
 2. Add a new object inside the `"projects"` array in `data/site.json` with:
-   - `slug`: URL-safe filename (e.g. `"my-project"` creates `dist/projects/my-project.html`)
+   - `slug`: URL-safe folder name (e.g. `"my-project"` creates `dist/projects/my-project/index.html` served at `/projects/my-project/`)
    - `title`, `category` (`"python"`, `"html-css"`, or `"other"`), `one_line_summary`
    - `problem`, `what_i_built`, `tech_list`, `languages`, `role`, `what_i_learned`
    - `github_url`, `live_url` (optional), `screenshot`: `"my-project.png"` (or `""` to auto-generate a clean SVG card with `color` and `initials`)

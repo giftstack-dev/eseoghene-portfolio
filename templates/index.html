@@ -8,7 +8,7 @@
     <div class="hero-photo-panel">
       <img
         class="hero-photo-img"
-        src="{{ root }}static/images/{{ site.profile_image }}"
+        src="/static/images/{{ site.profile_image }}"
         alt="{{ profile_meta.alt or ('Portrait of ' + site.display_name) }}"
         width="{{ profile_meta.width or 1054 }}"
         height="{{ profile_meta.height or 1456 }}"
@@ -35,17 +35,17 @@
           <p class="hero-subtitle">{{ site.title }}</p>
           <p class="hero-sentence">{{ site.hero_sentence }}</p>
           <div class="btn-row hero-actions">
-            <a class="pill-btn pill-btn--black" href="{{ root }}projects.html">
+            <a class="pill-btn pill-btn--black" href="/projects/">
               <span>View projects</span>
               {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
             </a>
-            <a class="pill-btn pill-btn--outline-dark" href="{{ root }}contact.html">
+            <a class="pill-btn pill-btn--outline-dark" href="/contact/">
               <span>Contact me</span>
             </a>
           </div>
           {{ icon_buttons_row(site) }}
           {% if site.cv_link %}
-          {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+          {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://', '/')) else ('/' ~ site.cv_link) %}
           <div class="hero-cv-wrap">
             <a class="btn pill-btn pill-btn--outline-dark pill-btn--sm" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" type="application/pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
               {{ svg_icon("download", "icon-sm") }}
@@ -69,7 +69,7 @@
         <p>{{ site.about_short }}</p>
         <p>{{ site.education.summary }}</p>
         <p>
-          <a class="text-arrow-link" href="{{ root }}about.html">
+          <a class="text-arrow-link" href="/about/">
             <span>More about me</span>
             {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
           </a>
@@ -141,7 +141,7 @@
       {% endfor %}
     </div>
     <p class="exp-more">
-      <a class="text-arrow-link" href="{{ root }}resume.html#experience-heading">
+      <a class="text-arrow-link" href="/resume/#experience-heading">
         <span>Full experience</span>
         {{ svg_icon("arrow-right", "icon-sm icon-arrow") }}
       </a>
@@ -158,12 +158,12 @@
       {% for project in site.projects %}
       <article class="proj-card{% if project.featured %} proj-card--featured{% endif %}">
         <div class="proj-card-media">
-          <a href="{{ root }}projects/{{ project.slug }}.html" tabindex="-1" aria-hidden="true">
+          <a href="/projects/{{ project.slug }}/" tabindex="-1" aria-hidden="true">
             {{ project_cover(project, root) }}
           </a>
         </div>
         <div class="proj-card-body">
-          <h3><a href="{{ root }}projects/{{ project.slug }}.html">{{ project.title }}</a></h3>
+          <h3><a href="/projects/{{ project.slug }}/">{{ project.title }}</a></h3>
           <p>{{ project.one_line_summary }}</p>
           <div class="proj-card-foot">
             {{ project_badge(project) }}
@@ -197,7 +197,7 @@
     <div class="contact-email-row">
       <p class="contact-email-wrap"><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
       {% if site.cv_link %}
-      {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+      {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://', '/')) else ('/' ~ site.cv_link) %}
       <a class="btn contact-cv-link" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" type="application/pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
         {{ svg_icon("download", "icon-sm") }}
         <span>Download my CV</span>

@@ -129,13 +129,13 @@ def resolve_project_images(
             project["image_alt"] = f"Fallback preview illustration for {project['title']}"
 
 
-def write_sitemap_and_robots(site: dict[str, Any], page_paths: list[str], dist_dir: Path = DIST_DIR) -> None:
+def write_sitemap_and_robots(site: dict[str, Any], url_paths: list[str], dist_dir: Path = DIST_DIR) -> None:
     """Generate sitemap.xml, robots.txt, and .nojekyll for GitHub Pages and Netlify."""
     base_url = str(site.get("site_url") or "https://eseogheneportfolio.netlify.app/").rstrip("/")
     urls = "\n".join(
-        f"  <url>\n    <loc>{html.escape(base_url)}/{'' if path == 'index.html' else html.escape(path)}</loc>\n  </url>"
-        for path in page_paths
-        if path != "404.html"
+        f"  <url>\n    <loc>{html.escape(base_url)}{html.escape(path)}</loc>\n  </url>"
+        for path in url_paths
+        if path != "/404/"
     )
     sitemap = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -150,6 +150,22 @@ def write_sitemap_and_robots(site: dict[str, Any], page_paths: list[str], dist_d
 
     # Disable Jekyll processing so GitHub Pages serves dist/ directly
     (dist_dir / ".nojekyll").write_text("", encoding="utf-8")
+
+
+def write_redirects(projects: list[dict[str, Any]], dist_dir: Path = DIST_DIR) -> None:
+    """Write Netlify permanent 301 _redirects rules from legacy .html routes to clean URLs."""
+    lines = [
+        "/index.html / 301",
+        "/about.html /about/ 301",
+        "/skills.html /skills/ 301",
+        "/projects.html /projects/ 301",
+        "/resume.html /resume/ 301",
+        "/contact.html /contact/ 301",
+    ]
+    for project in projects:
+        slug = project["slug"]
+        lines.append(f"/projects/{slug}.html /projects/{slug}/ 301")
+    (dist_dir / "_redirects").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def build_site(
@@ -200,41 +216,47 @@ def build_site(
         {
             "template": "index.html",
             "output": "index.html",
+            "url_path": "/",
             "active_nav": "home",
             "title": f"{site['name']} — {site['title']}",
             "description": site["hero_sentence"],
         },
         {
             "template": "projects.html",
-            "output": "projects.html",
+            "output": "projects/index.html",
+            "url_path": "/projects/",
             "active_nav": "projects",
             "title": f"Portfolio — {site['name']}",
             "description": "Projects built with Python, HTML, CSS, TypeScript, and GitHub Actions by Eseoghene Gift-Asisisi Asisisi.",
         },
         {
             "template": "about.html",
-            "output": "about.html",
+            "output": "about/index.html",
+            "url_path": "/about/",
             "active_nav": "about",
             "title": f"About me — {site['name']}",
             "description": f"About {site['name']}, {site['title']} from {site['university']}.",
         },
         {
             "template": "skills.html",
-            "output": "skills.html",
+            "output": "skills/index.html",
+            "url_path": "/skills/",
             "active_nav": "skills",
             "title": f"Skills — {site['name']}",
             "description": f"Core skills and tools used by {site['name']}: HTML, CSS, Python, and Java.",
         },
         {
             "template": "contact.html",
-            "output": "contact.html",
+            "output": "contact/index.html",
+            "url_path": "/contact/",
             "active_nav": "contact",
             "title": f"Contact — {site['name']}",
             "description": f"Contact {site['name']} by email, GitHub, or LinkedIn.",
         },
         {
             "template": "resume.html",
-            "output": "resume.html",
+            "output": "resume/index.html",
+            "url_path": "/resume/",
             "active_nav": "resume",
             "title": f"Resume — {site['name']}",
             "description": f"Resume overview, skills, education, and projects for {site['name']}.",
@@ -242,6 +264,7 @@ def build_site(
         {
             "template": "404.html",
             "output": "404.html",
+            "url_path": "/404/",
             "active_nav": "",
             "title": f"Page Not Found — {site['name']}",
             "description": "The requested portfolio page could not be found.",
@@ -262,34 +285,37 @@ def build_site(
 
     for page in top_pages:
         template = env.get_template(page["template"])
-        page_path = page["output"]
-        canonical_url = f"{base_url}/" if page_path == "index.html" else f"{base_url}/{page_path}"
+        url_path = page["url_path"]
+        canonical_url = f"{base_url}/" if page["output"] == "404.html" else f"{base_url}{url_path}"
         rendered = template.render(
             **shared_context,
-            root="",
-            page_path=page_path,
+            root="/",
+            page_path=url_path,
             canonical_url=canonical_url,
             active_nav=page["active_nav"],
             page_title=page["title"],
             page_description=page["description"],
             og_image=default_og_image,
         )
-        out_file = dist_dir / page_path
+        out_file = dist_dir / page["output"]
+        out_file.parent.mkdir(parents=True, exist_ok=True)
         out_file.write_text(rendered, encoding="utf-8")
         generated_files.append(out_file)
-        sitemap_paths.append(page_path)
+        if page["output"] != "404.html":
+            sitemap_paths.append(url_path)
 
     detail_template = env.get_template("project_detail.html")
     for idx, project in enumerate(projects):
         prev_project = projects[idx - 1] if idx > 0 else None
         next_project = projects[idx + 1] if idx < len(projects) - 1 else None
-        rel_path = f"projects/{project['slug']}.html"
+        output_rel = f"projects/{project['slug']}/index.html"
+        url_path = f"/projects/{project['slug']}/"
 
         rendered = detail_template.render(
             **shared_context,
-            root="../",
-            page_path=rel_path,
-            canonical_url=f"{base_url}/{rel_path}",
+            root="/",
+            page_path=url_path,
+            canonical_url=f"{base_url}{url_path}",
             active_nav="projects",
             page_title=f"{project['title']} — {site['name']}",
             page_description=project["one_line_summary"],
@@ -298,12 +324,14 @@ def build_site(
             prev_project=prev_project,
             next_project=next_project,
         )
-        out_file = dist_dir / rel_path
+        out_file = dist_dir / output_rel
+        out_file.parent.mkdir(parents=True, exist_ok=True)
         out_file.write_text(rendered, encoding="utf-8")
         generated_files.append(out_file)
-        sitemap_paths.append(rel_path)
+        sitemap_paths.append(url_path)
 
     write_sitemap_and_robots(site, sitemap_paths, dist_dir)
+    write_redirects(projects, dist_dir)
     return generated_files
 
 

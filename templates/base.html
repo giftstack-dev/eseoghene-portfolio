@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Raleway:wght@600;700;800;900&display=swap">
 
-  <link rel="stylesheet" href="{{ root }}static/style.css">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body{% if active_nav in ('home', 'about') and profile_image_exists %} class="has-photo-header"{% endif %}>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -140,7 +140,7 @@
     <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-label="Toggle navigation menu">
 
     <div class="container header-inner">
-      <a class="logo-link" href="{{ root }}index.html" aria-label="Home">
+      <a class="logo-link" href="/" aria-label="Home">
         <svg class="logo-svg" viewBox="0 0 44 36" aria-hidden="true">
           <path d="M2 32V4h14v5H8v6h7v5H8v7h8v5H2z" fill="currentColor"></path>
           <path d="M24 32L31 4h6l6 28h-6l-1.5-7h-6L28 32h-4zm7.5-12h4l-2-9-2 9z" fill="currentColor"></path>
@@ -150,12 +150,12 @@
 
       <nav class="nav-desktop" aria-label="Primary navigation">
         <ul class="nav-list">
-          <li><a class="nav-link" href="{{ root }}about.html" {% if active_nav == "about" %}aria-current="page"{% endif %}>About me</a></li>
-          <li><a class="nav-link" href="{{ root }}skills.html" {% if active_nav == "skills" %}aria-current="page"{% endif %}>Skills</a></li>
-          <li><a class="nav-link" href="{{ root }}projects.html" {% if active_nav == "projects" %}aria-current="page"{% endif %}>Portfolio</a></li>
-          <li><a class="nav-link" href="{{ root }}resume.html" {% if active_nav == "resume" %}aria-current="page"{% endif %}>Resume</a></li>
+          <li><a class="nav-link" href="/about/" {% if active_nav == "about" %}aria-current="page"{% endif %}>About me</a></li>
+          <li><a class="nav-link" href="/skills/" {% if active_nav == "skills" %}aria-current="page"{% endif %}>Skills</a></li>
+          <li><a class="nav-link" href="/projects/" {% if active_nav == "projects" %}aria-current="page"{% endif %}>Portfolio</a></li>
+          <li><a class="nav-link" href="/resume/" {% if active_nav == "resume" %}aria-current="page"{% endif %}>Resume</a></li>
         </ul>
-        <a class="nav-contact-pill" href="{{ root }}contact.html" {% if active_nav == "contact" %}aria-current="page"{% endif %}>CONTACT ME</a>
+        <a class="nav-contact-pill" href="/contact/" {% if active_nav == "contact" %}aria-current="page"{% endif %}>CONTACT ME</a>
       </nav>
 
       <label for="nav-toggle" class="nav-toggle-btn">
@@ -166,7 +166,7 @@
 
     <div class="nav-sheet" aria-label="Mobile navigation">
       <div class="nav-sheet-top">
-        <a class="logo-link nav-sheet-logo" href="{{ root }}index.html" aria-label="Home">
+        <a class="logo-link nav-sheet-logo" href="/" aria-label="Home">
           <svg class="logo-svg" viewBox="0 0 44 36" aria-hidden="true">
             <path d="M2 32V4h14v5H8v6h7v5H8v7h8v5H2z" fill="currentColor"></path>
             <path d="M24 32L31 4h6l6 28h-6l-1.5-7h-6L28 32h-4zm7.5-12h4l-2-9-2 9z" fill="currentColor"></path>
@@ -180,12 +180,12 @@
       </div>
 
       <ul class="nav-sheet-links">
-        <li><a class="nav-sheet-link" href="{{ root }}index.html" {% if active_nav == "home" %}aria-current="page"{% endif %}><span>Home</span>{{ svg_icon("arrow-right") }}</a></li>
-        <li><a class="nav-sheet-link" href="{{ root }}about.html" {% if active_nav == "about" %}aria-current="page"{% endif %}><span>About me</span>{{ svg_icon("arrow-right") }}</a></li>
-        <li><a class="nav-sheet-link" href="{{ root }}skills.html" {% if active_nav == "skills" %}aria-current="page"{% endif %}><span>Skills</span>{{ svg_icon("arrow-right") }}</a></li>
-        <li><a class="nav-sheet-link" href="{{ root }}projects.html" {% if active_nav == "projects" %}aria-current="page"{% endif %}><span>Portfolio</span>{{ svg_icon("arrow-right") }}</a></li>
-        <li><a class="nav-sheet-link" href="{{ root }}resume.html" {% if active_nav == "resume" %}aria-current="page"{% endif %}><span>Resume</span>{{ svg_icon("arrow-right") }}</a></li>
-        <li><a class="nav-sheet-link" href="{{ root }}contact.html" {% if active_nav == "contact" %}aria-current="page"{% endif %}><span>CONTACT ME</span>{{ svg_icon("arrow-right") }}</a></li>
+        <li><a class="nav-sheet-link" href="/" {% if active_nav == "home" %}aria-current="page"{% endif %}><span>Home</span>{{ svg_icon("arrow-right") }}</a></li>
+        <li><a class="nav-sheet-link" href="/about/" {% if active_nav == "about" %}aria-current="page"{% endif %}><span>About me</span>{{ svg_icon("arrow-right") }}</a></li>
+        <li><a class="nav-sheet-link" href="/skills/" {% if active_nav == "skills" %}aria-current="page"{% endif %}><span>Skills</span>{{ svg_icon("arrow-right") }}</a></li>
+        <li><a class="nav-sheet-link" href="/projects/" {% if active_nav == "projects" %}aria-current="page"{% endif %}><span>Portfolio</span>{{ svg_icon("arrow-right") }}</a></li>
+        <li><a class="nav-sheet-link" href="/resume/" {% if active_nav == "resume" %}aria-current="page"{% endif %}><span>Resume</span>{{ svg_icon("arrow-right") }}</a></li>
+        <li><a class="nav-sheet-link" href="/contact/" {% if active_nav == "contact" %}aria-current="page"{% endif %}><span>CONTACT ME</span>{{ svg_icon("arrow-right") }}</a></li>
       </ul>
 
       <p class="nav-sheet-foot">{{ site.name | replace("-", "\u2011") }}{% if site.location %} &middot; {{ site.location }}{% endif %}</p>
@@ -199,7 +199,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-simple">
-        <a class="logo-link footer-logo" href="{{ root }}index.html" aria-label="{{ site.display_name }} Home">
+        <a class="logo-link footer-logo" href="/" aria-label="Home">
           <svg class="logo-svg" viewBox="0 0 44 36" aria-hidden="true">
             <path d="M2 32V4h14v5H8v6h7v5H8v7h8v5H2z" fill="currentColor"></path>
             <path d="M24 32L31 4h6l6 28h-6l-1.5-7h-6L28 32h-4zm7.5-12h4l-2-9-2 9z" fill="currentColor"></path>

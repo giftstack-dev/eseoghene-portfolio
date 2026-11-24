@@ -8,7 +8,7 @@
     <div class="split-header-photo">
       <img
         class="hero-photo-img"
-        src="{{ root }}static/images/{{ site.profile_image }}"
+        src="/static/images/{{ site.profile_image }}"
         alt="{{ profile_meta.alt or ('Portrait of ' + site.display_name) }}"
         width="{{ profile_meta.width or 1054 }}"
         height="{{ profile_meta.height or 1456 }}"
@@ -32,7 +32,7 @@
       <div class="container">
         <div class="split-header-grey-inner">
           <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="{{ root }}index.html">Home</a>
+            <a href="/">Home</a>
             <span aria-hidden="true">/</span>
             <span>About me</span>
           </nav>

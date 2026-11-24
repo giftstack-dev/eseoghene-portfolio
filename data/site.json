@@ -9,7 +9,7 @@
   "github": "https://github.com/giftstack-dev",
   "linkedin": "https://www.linkedin.com/in/eseoghene-asisisi-99b378397",
   "upwork": "",
-  "cv_link": "static/files/Eseoghene_CV.pdf",
+  "cv_link": "/static/files/Eseoghene_CV.pdf",
   "profile_image": "profile.jpg",
   "site_url": "https://eseogheneportfolio.netlify.app/",
   "hero_sentence": "I build websites and web apps with Python, HTML and CSS, and I test everything I ship.",

@@ -94,20 +94,21 @@ def test_expected_pages_and_assets_exist(built_site: tuple[dict, list[Path]]) ->
     site, _ = built_site
     expected = [
         DIST_DIR / "index.html",
-        DIST_DIR / "projects.html",
-        DIST_DIR / "about.html",
-        DIST_DIR / "skills.html",
-        DIST_DIR / "contact.html",
-        DIST_DIR / "resume.html",
+        DIST_DIR / "projects" / "index.html",
+        DIST_DIR / "about" / "index.html",
+        DIST_DIR / "skills" / "index.html",
+        DIST_DIR / "contact" / "index.html",
+        DIST_DIR / "resume" / "index.html",
         DIST_DIR / "404.html",
         DIST_DIR / "sitemap.xml",
         DIST_DIR / "robots.txt",
+        DIST_DIR / "_redirects",
         DIST_DIR / ".nojekyll",
         DIST_DIR / "static" / "style.css",
         DIST_DIR / "static" / "images" / "profile.jpg",
     ]
     for project in site["projects"]:
-        expected.append(DIST_DIR / "projects" / f"{project['slug']}.html")
+        expected.append(DIST_DIR / "projects" / project["slug"] / "index.html")
         real_img = DIST_DIR / "static" / "images" / str(project.get("screenshot") or "")
         fallback_svg = DIST_DIR / "static" / "images" / f"card-{project['slug']}.svg"
         assert real_img.is_file(), f"Missing real screenshot asset for {project['slug']}: {real_img}"
@@ -157,7 +158,7 @@ def test_single_h1_and_meta_description_on_every_page(built_site: tuple[dict, li
 
 def test_every_project_has_title_repo_live_links_and_diagram_caption(built_site: tuple[dict, list[Path]]) -> None:
     site, _ = built_site
-    projects_html = (DIST_DIR / "projects.html").read_text(encoding="utf-8")
+    projects_html = (DIST_DIR / "projects" / "index.html").read_text(encoding="utf-8")
     index_html = (DIST_DIR / "index.html").read_text(encoding="utf-8")
 
     expected_live_urls = {
@@ -177,14 +178,14 @@ def test_every_project_has_title_repo_live_links_and_diagram_caption(built_site:
 
     for project in site["projects"]:
         assert project["title"] in projects_html
-        assert f"projects/{project['slug']}.html" in projects_html
+        assert f'/projects/{project["slug"]}/' in projects_html
         assert project["github_url"] in projects_html
 
-        detail_html = (DIST_DIR / "projects" / f"{project['slug']}.html").read_text(encoding="utf-8")
+        detail_html = (DIST_DIR / "projects" / project["slug"] / "index.html").read_text(encoding="utf-8")
         assert project["title"] in detail_html
         assert project["github_url"] in detail_html
 
-    cicd_detail = (DIST_DIR / "projects" / "ci-cd-pipeline-showcase.html").read_text(encoding="utf-8")
+    cicd_detail = (DIST_DIR / "projects" / "ci-cd-pipeline-showcase" / "index.html").read_text(encoding="utf-8")
     assert "Pipeline diagram" in index_html
     assert "Pipeline diagram" in projects_html
     assert "Pipeline diagram" in cicd_detail
@@ -195,7 +196,7 @@ def test_every_project_has_title_repo_live_links_and_diagram_caption(built_site:
 def test_empty_links_are_not_rendered(built_site: tuple[dict, list[Path]]) -> None:
     site, _ = built_site
 
-    resume_html = (DIST_DIR / "resume.html").read_text(encoding="utf-8")
+    resume_html = (DIST_DIR / "resume" / "index.html").read_text(encoding="utf-8")
     if not site["cv_link"]:
         assert "Download CV" not in resume_html
         assert "CV coming soon" in resume_html
@@ -208,6 +209,17 @@ def test_empty_links_are_not_rendered(built_site: tuple[dict, list[Path]]) -> No
             assert href.strip() != "", f"Empty href rendered in {html_file}"
         if not site["upwork"]:
             assert "Upwork" not in content, f"Empty Upwork link rendered in {html_file}"
+
+
+def _resolve_root_relative_target(target: str) -> Path:
+    clean = target.split("#", 1)[0].split("?", 1)[0]
+    rel = clean.lstrip("/")
+    if not rel:
+        return (DIST_DIR / "index.html").resolve()
+    candidate = DIST_DIR / rel
+    if clean.endswith("/") or candidate.is_dir():
+        return (candidate / "index.html").resolve()
+    return candidate.resolve()
 
 
 def test_internal_links_and_images_resolve_to_existing_files(built_site: tuple[dict, list[Path]]) -> None:
@@ -223,13 +235,15 @@ def test_internal_links_and_images_resolve_to_existing_files(built_site: tuple[d
             clean_target = target.split("#", 1)[0]
             if not clean_target:
                 continue
-            resolved = (html_file.parent / clean_target).resolve()
+            assert target.startswith("/"), f"Expected root-relative path for '{target}' in {html_file}"
+            assert ".html" not in clean_target, f"Found .html in internal target '{target}' in {html_file}"
+            resolved = _resolve_root_relative_target(clean_target)
             assert resolved.is_file(), f"Broken target '{target}' in {html_file} (expected {resolved})"
 
 
 def test_contact_and_social_links_match_site_json(built_site: tuple[dict, list[Path]]) -> None:
     site, _ = built_site
-    contact_html = (DIST_DIR / "contact.html").read_text(encoding="utf-8")
+    contact_html = (DIST_DIR / "contact" / "index.html").read_text(encoding="utf-8")
     index_html = (DIST_DIR / "index.html").read_text(encoding="utf-8")
 
     for page_content in (contact_html, index_html):
@@ -241,15 +255,15 @@ def test_contact_and_social_links_match_site_json(built_site: tuple[dict, list[P
 def test_navigation_skills_education_experience_and_ai_rule(built_site: tuple[dict, list[Path]]) -> None:
     site, _ = built_site
     index_html = (DIST_DIR / "index.html").read_text(encoding="utf-8")
-    about_html = (DIST_DIR / "about.html").read_text(encoding="utf-8")
-    skills_html = (DIST_DIR / "skills.html").read_text(encoding="utf-8")
-    resume_html = (DIST_DIR / "resume.html").read_text(encoding="utf-8")
+    about_html = (DIST_DIR / "about" / "index.html").read_text(encoding="utf-8")
+    skills_html = (DIST_DIR / "skills" / "index.html").read_text(encoding="utf-8")
+    resume_html = (DIST_DIR / "resume" / "index.html").read_text(encoding="utf-8")
     sitemap_xml = (DIST_DIR / "sitemap.xml").read_text(encoding="utf-8")
 
     for label in ("About me", "Skills", "Portfolio", "Resume", "CONTACT ME"):
         assert label in index_html
 
-    assert "skills.html" in sitemap_xml
+    assert "/skills/</loc>" in sitemap_xml
     for skill_name in ("HTML", "CSS", "Python", "Java"):
         assert skill_name in skills_html
     assert "Self-taught, learning" in skills_html
@@ -292,7 +306,18 @@ def test_navigation_skills_education_experience_and_ai_rule(built_site: tuple[di
         footer_html = content.split("<footer", 1)[1].split("</footer>", 1)[0]
         inspector = PageInspector()
         inspector.feed(footer_html)
-        for forbidden_nav in ("about.html", "skills.html", "projects.html", "resume.html", "contact.html"):
+        for forbidden_nav in (
+            "/about/",
+            "/skills/",
+            "/projects/",
+            "/resume/",
+            "/contact/",
+            "about.html",
+            "skills.html",
+            "projects.html",
+            "resume.html",
+            "contact.html",
+        ):
             assert forbidden_nav not in inspector.hrefs, f"Forbidden nav link '{forbidden_nav}' in footer of {html_file}"
         assert f"mailto:{site['email']}" in inspector.hrefs
         assert site["github"] in inspector.hrefs
@@ -304,11 +329,11 @@ def test_navigation_skills_education_experience_and_ai_rule(built_site: tuple[di
 
 def test_portrait_attributes_and_placement(built_site: tuple[dict, list[Path]]) -> None:
     index_html = (DIST_DIR / "index.html").read_text(encoding="utf-8")
-    about_html = (DIST_DIR / "about.html").read_text(encoding="utf-8")
-    resume_html = (DIST_DIR / "resume.html").read_text(encoding="utf-8")
+    about_html = (DIST_DIR / "about" / "index.html").read_text(encoding="utf-8")
+    resume_html = (DIST_DIR / "resume" / "index.html").read_text(encoding="utf-8")
 
     for page_html in (index_html, about_html):
-        assert 'src="static/images/profile.jpg"' in page_html
+        assert 'src="/static/images/profile.jpg"' in page_html
         assert 'alt="Portrait of Eseoghene Asisisi"' in page_html
         assert 'width="1054"' in page_html
         assert 'height="1456"' in page_html
@@ -335,7 +360,7 @@ def test_build_passes_and_falls_back_when_profile_image_removed(tmp_path: Path) 
     assert outputs
 
     fallback_index = (tmp_dist / "index.html").read_text(encoding="utf-8")
-    fallback_about = (tmp_dist / "about.html").read_text(encoding="utf-8")
+    fallback_about = (tmp_dist / "about" / "index.html").read_text(encoding="utf-8")
     assert "Add profile.jpg to static/images/" in fallback_index
     assert "Add profile.jpg to static/images/" in fallback_about
 
@@ -358,10 +383,10 @@ def test_cv_pdf_copied_valid_and_linked_with_download_attribute(built_site: tupl
     assert pdf_path.read_bytes().startswith(b"%PDF"), "Eseoghene_CV.pdf does not start with %PDF"
 
     expected_href = site["cv_link"]
-    assert expected_href == "static/files/Eseoghene_CV.pdf"
+    assert expected_href == "/static/files/Eseoghene_CV.pdf"
 
-    for page_name in ("resume.html", "index.html", "contact.html"):
-        page_file = DIST_DIR / page_name
+    for page_rel in (Path("resume/index.html"), Path("index.html"), Path("contact/index.html")):
+        page_file = DIST_DIR / page_rel
         html_text = page_file.read_text(encoding="utf-8")
         inspector = PageInspector()
         inspector.feed(html_text)
@@ -369,23 +394,23 @@ def test_cv_pdf_copied_valid_and_linked_with_download_attribute(built_site: tupl
             link for link in inspector.links
             if link.get("href") == expected_href and "download" in link
         ]
-        assert dl_links, f"Missing CV link with download attribute on {page_name}"
+        assert dl_links, f"Missing CV link with download attribute on {page_rel}"
         for link in dl_links:
             assert "btn" in link.get("class", "").split()
             assert link["download"] == "Eseoghene_Asisisi_CV.pdf"
             assert link.get("type") == "application/pdf"
             assert "onclick" not in link
             assert link.get("aria-label") == "Download Eseoghene Asisisi's CV as a PDF"
-            assert (page_file.parent / link["href"]).resolve() == pdf_path.resolve()
+            assert _resolve_root_relative_target(link["href"]) == pdf_path.resolve()
 
-    resume_html = (DIST_DIR / "resume.html").read_text(encoding="utf-8")
+    resume_html = (DIST_DIR / "resume" / "index.html").read_text(encoding="utf-8")
     assert "Download CV" in resume_html
     assert "PDF, 3 pages" in resume_html
     assert "View in browser" in resume_html
     assert "CV coming soon" not in resume_html
 
     index_html = (DIST_DIR / "index.html").read_text(encoding="utf-8")
-    contact_html = (DIST_DIR / "contact.html").read_text(encoding="utf-8")
+    contact_html = (DIST_DIR / "contact" / "index.html").read_text(encoding="utf-8")
     assert "Download CV" in index_html
     assert "Download my CV" in index_html
     assert "Download my CV" in contact_html
@@ -482,13 +507,13 @@ def test_cv_links_hidden_when_cv_link_empty(tmp_path: Path) -> None:
     tmp_dist = tmp_path / "dist"
     build_site(data_path=tmp_data, dist_dir=tmp_dist)
 
-    resume_html = (tmp_dist / "resume.html").read_text(encoding="utf-8")
+    resume_html = (tmp_dist / "resume" / "index.html").read_text(encoding="utf-8")
     assert "CV coming soon" in resume_html
     for forbidden in ("Download CV", "Download my CV", "PDF, 3 pages", "View in browser", "Eseoghene_CV.pdf"):
         assert forbidden not in resume_html
 
     for html_file in _all_html_files(tmp_dist):
-        if html_file.name == "resume.html":
+        if html_file == (tmp_dist / "resume" / "index.html"):
             continue
         content = html_file.read_text(encoding="utf-8")
         for forbidden in ("Download CV", "Download my CV", "CV coming soon", "Eseoghene_CV.pdf"):
@@ -501,7 +526,8 @@ def test_sitemap_robots_and_canonical_use_netlify_portfolio_url(built_site: tupl
     robots_txt = (DIST_DIR / "robots.txt").read_text(encoding="utf-8")
 
     assert f"<loc>{expected_base}</loc>" in sitemap_xml
-    assert f"<loc>{expected_base}resume.html</loc>" in sitemap_xml
+    assert f"<loc>{expected_base}resume/</loc>" in sitemap_xml
+    assert ".html" not in sitemap_xml, f"Unexpected .html in sitemap.xml:\n{sitemap_xml}"
     assert f"Sitemap: {expected_base}sitemap.xml" in robots_txt
     assert "giftstack-dev.github.io" not in sitemap_xml
     assert "giftstack-dev.github.io" not in robots_txt
@@ -512,5 +538,34 @@ def test_sitemap_robots_and_canonical_use_netlify_portfolio_url(built_site: tupl
         inspector.feed(content)
         assert len(inspector.canonicals) == 1, f"Expected 1 canonical tag in {html_file}"
         assert inspector.canonicals[0].startswith(expected_base), f"Unexpected canonical URL in {html_file}: {inspector.canonicals[0]}"
+        assert ".html" not in inspector.canonicals[0], f"Unexpected .html in canonical tag of {html_file}: {inspector.canonicals[0]}"
         assert len(inspector.og_urls) == 1, f"Expected 1 og:url meta tag in {html_file}"
         assert inspector.og_urls[0].startswith(expected_base), f"Unexpected og:url in {html_file}: {inspector.og_urls[0]}"
+        assert ".html" not in inspector.og_urls[0], f"Unexpected .html in og:url of {html_file}: {inspector.og_urls[0]}"
+
+
+def test_no_html_suffix_in_links_or_assets_and_redirects_file(built_site: tuple[dict, list[Path]]) -> None:
+    site, _ = built_site
+    for html_file in _all_html_files():
+        inspector = PageInspector()
+        inspector.feed(html_file.read_text(encoding="utf-8"))
+        for attr_val in inspector.hrefs + inspector.srcs:
+            assert ".html" not in attr_val, f"Found .html in link/asset '{attr_val}' inside {html_file}"
+
+    redirects_path = DIST_DIR / "_redirects"
+    assert redirects_path.is_file(), "Missing dist/_redirects"
+    redirects_lines = {line.strip() for line in redirects_path.read_text(encoding="utf-8").splitlines() if line.strip()}
+    expected_redirects = {
+        "/index.html / 301",
+        "/about.html /about/ 301",
+        "/skills.html /skills/ 301",
+        "/projects.html /projects/ 301",
+        "/resume.html /resume/ 301",
+        "/contact.html /contact/ 301",
+    }
+    for project in site["projects"]:
+        slug = project["slug"]
+        expected_redirects.add(f"/projects/{slug}.html /projects/{slug}/ 301")
+
+    for rule in expected_redirects:
+        assert rule in redirects_lines, f"Missing redirect rule in dist/_redirects: {rule}"
