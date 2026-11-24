@@ -97,6 +97,11 @@ def copy_static_assets(static_dir: Path = STATIC_DIR, dist_dir: Path = DIST_DIR)
             if item.is_file():
                 shutil.copy2(item, images_dst / item.name)
 
+    files_src = static_dir / "files"
+    files_dst = target_static / "files"
+    if files_src.exists():
+        shutil.copytree(files_src, files_dst, dirs_exist_ok=True)
+
 
 def resolve_project_images(
     projects: list[dict[str, Any]],
@@ -125,10 +130,10 @@ def resolve_project_images(
 
 
 def write_sitemap_and_robots(site: dict[str, Any], page_paths: list[str], dist_dir: Path = DIST_DIR) -> None:
-    """Generate sitemap.xml, robots.txt, and .nojekyll for GitHub Pages."""
-    base_url = str(site.get("site_url") or "https://giftstack-dev.github.io").rstrip("/")
+    """Generate sitemap.xml, robots.txt, and .nojekyll for GitHub Pages and Netlify."""
+    base_url = str(site.get("site_url") or "https://eseogheneportfolio.netlify.app/").rstrip("/")
     urls = "\n".join(
-        f"  <url>\n    <loc>{html.escape(base_url)}/{html.escape(path)}</loc>\n  </url>"
+        f"  <url>\n    <loc>{html.escape(base_url)}/{'' if path == 'index.html' else html.escape(path)}</loc>\n  </url>"
         for path in page_paths
         if path != "404.html"
     )
@@ -243,8 +248,11 @@ def build_site(
         },
     ]
 
+    base_url = str(site.get("site_url") or "https://eseogheneportfolio.netlify.app/").rstrip("/")
+
     shared_context = {
         "site": site,
+        "site_base_url": base_url,
         "projects_by_slug": projects_by_slug,
         "category_counts": category_counts,
         "profile_image_exists": profile_image_exists,
@@ -254,19 +262,22 @@ def build_site(
 
     for page in top_pages:
         template = env.get_template(page["template"])
+        page_path = page["output"]
+        canonical_url = f"{base_url}/" if page_path == "index.html" else f"{base_url}/{page_path}"
         rendered = template.render(
             **shared_context,
             root="",
-            page_path=page["output"],
+            page_path=page_path,
+            canonical_url=canonical_url,
             active_nav=page["active_nav"],
             page_title=page["title"],
             page_description=page["description"],
             og_image=default_og_image,
         )
-        out_file = dist_dir / page["output"]
+        out_file = dist_dir / page_path
         out_file.write_text(rendered, encoding="utf-8")
         generated_files.append(out_file)
-        sitemap_paths.append(page["output"])
+        sitemap_paths.append(page_path)
 
     detail_template = env.get_template("project_detail.html")
     for idx, project in enumerate(projects):
@@ -278,6 +289,7 @@ def build_site(
             **shared_context,
             root="../",
             page_path=rel_path,
+            canonical_url=f"{base_url}/{rel_path}",
             active_nav="projects",
             page_title=f"{project['title']} — {site['name']}",
             page_description=project["one_line_summary"],

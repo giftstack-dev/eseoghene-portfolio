@@ -44,6 +44,15 @@
             </a>
           </div>
           {{ icon_buttons_row(site) }}
+          {% if site.cv_link %}
+          {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+          <div class="hero-cv-wrap">
+            <a class="pill-btn pill-btn--outline-dark pill-btn--sm" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
+              {{ svg_icon("download", "icon-sm") }}
+              <span>Download CV</span>
+            </a>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -182,7 +191,16 @@
 <section class="contact-band reveal-section" aria-labelledby="home-contact-heading">
   <div class="container">
     <h2 id="home-contact-heading">Let's work together.</h2>
-    <p><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+    <div class="contact-email-row">
+      <p class="contact-email-wrap"><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+      {% if site.cv_link %}
+      {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+      <a class="contact-cv-link" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
+        {{ svg_icon("download", "icon-sm") }}
+        <span>Download my CV</span>
+      </a>
+      {% endif %}
+    </div>
     {{ icon_buttons_row(site) }}
   </div>
 </section>

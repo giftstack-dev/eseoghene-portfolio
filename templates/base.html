@@ -8,14 +8,16 @@
   <title>{{ page_title }}</title>
   <meta name="description" content="{{ page_description }}">
 
+  <link rel="canonical" href="{{ canonical_url }}">
+
   <!-- Open Graph & Social Share Metadata -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ site.name }}">
   <meta property="og:title" content="{{ page_title }}">
   <meta property="og:description" content="{{ page_description }}">
-  <meta property="og:url" content="{{ site.site_url }}/{{ page_path }}">
+  <meta property="og:url" content="{{ canonical_url }}">
   {% if og_image %}
-  <meta property="og:image" content="{{ site.site_url }}/static/images/{{ og_image }}">
+  <meta property="og:image" content="{{ site_base_url }}/static/images/{{ og_image }}">
   {% endif %}
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ page_title }}">

@@ -5,11 +5,17 @@
 <section class="split-header" aria-label="Resume header">
   <div class="split-header-panels">
     <div class="split-header-black">
-      <div>
+      <div class="resume-cv-actions">
         {% if site.cv_link %}
-        <a class="pill-btn pill-btn--white" href="{{ site.cv_link }}" target="_blank" rel="noopener noreferrer">
+        {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+        <a class="pill-btn pill-btn--white pill-btn--lg" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
           {{ svg_icon("download", "icon-sm") }}
           <span>Download CV</span>
+        </a>
+        <p class="cv-meta-mono">PDF, 3 pages</p>
+        <a class="cv-view-link" href="{{ cv_href }}" target="_blank" rel="noopener noreferrer" aria-label="View Eseoghene Asisisi's CV in browser">
+          <span>View in browser</span>
+          {{ svg_icon("external", "icon-sm") }}
         </a>
         {% else %}
         <span class="lang-badge">CV coming soon</span>
@@ -27,6 +33,11 @@
           </nav>
           <h1>Resume</h1>
           <p>{{ site.name | replace("-", "\u2011") }} &middot; {{ site.title }}</p>
+          <p class="resume-header-links">
+            {% if site.email %}<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}
+            {% if site.github %} &middot; <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>{% endif %}
+            {% if site.linkedin %} &middot; <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>{% endif %}
+          </p>
           {% if site.location %}
           <p>{{ site.location }}</p>
           {% endif %}
@@ -41,7 +52,7 @@
     <div class="story-stack">
       <section class="resume-panel">
         <h2>Summary</h2>
-        <p>{{ site.about_short }}</p>
+        <p>{{ site.resume_summary or site.about_short }}</p>
       </section>
 
       <section class="resume-panel" aria-labelledby="experience-heading">
@@ -81,11 +92,16 @@
 
       <section class="resume-panel">
         <h2>Skills</h2>
-        <ul class="tech-chips">
+        <ul class="resume-skills-list">
           {% for skill in site.skills %}
-          <li class="tech-chip tech-chip--light">{{ skill.name }} &mdash; {{ skill.proficiency }}</li>
+          <li>
+            <strong>{{ skill.name }}</strong> <span class="resume-skill-level">({{ skill.proficiency }})</span>: {{ skill.description }}
+          </li>
           {% endfor %}
         </ul>
+        {% if site.tools %}
+        <p class="resume-tools"><strong>Tools and technologies:</strong> {{ site.tools | join(", ") }}</p>
+        {% endif %}
       </section>
 
       <section class="resume-panel">
@@ -93,20 +109,34 @@
         <ul class="resume-projects">
           {% for project in site.projects %}
           <li>
-            <p>
-              <a href="{{ root }}projects/{{ project.slug }}.html">{{ project.title }}</a> &mdash; {{ project.one_line_summary }}
-            </p>
+            <h3><a href="{{ root }}projects/{{ project.slug }}.html">{{ project.number or ("%02d" | format(loop.index)) }}. {{ project.title }}</a></h3>
+            <p>{{ project.one_line_summary }}</p>
+            {% if project.problem %}
+            <p class="resume-project-detail"><strong>Purpose:</strong> {{ project.problem }}</p>
+            {% endif %}
+            {% if project.what_i_built %}
+            <p class="resume-project-detail"><strong>What I worked on:</strong> {{ project.what_i_built }}</p>
+            {% endif %}
+            {% if project.role %}
+            <p class="resume-project-detail"><strong>Role:</strong> {{ project.role }}</p>
+            {% endif %}
+            {% if project.tech_list %}
+            <p class="resume-project-detail"><strong>Technologies used:</strong> {{ project.tech_list | join(", ") }}</p>
+            {% endif %}
+            {% if project.what_i_learned %}
+            <p class="resume-project-detail"><strong>What I learned:</strong> {{ project.what_i_learned }}</p>
+            {% endif %}
             <div class="btn-row">
+              {% if project.github_url %}
+              <a class="text-arrow-link" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
+                <span>GitHub repository</span>
+                {{ svg_icon("github", "icon-sm") }}
+              </a>
+              {% endif %}
               {% if project.live_url %}
               <a class="text-arrow-link" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">
                 <span>{{ project.live_label or "View live" }}</span>
                 {{ svg_icon("external", "icon-sm") }}
-              </a>
-              {% endif %}
-              {% if project.github_url %}
-              <a class="text-arrow-link" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
-                <span>Source code</span>
-                {{ svg_icon("github", "icon-sm") }}
               </a>
               {% endif %}
             </div>

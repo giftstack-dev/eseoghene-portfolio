@@ -46,6 +46,8 @@ class PageInspector(HTMLParser):
         self.imgs_without_alt: list[str] = []
         self.imgs_missing_dimensions: list[str] = []
         self.links: list[dict[str, str]] = []
+        self.canonicals: list[str] = []
+        self.og_urls: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attr_map = dict(attrs)
@@ -57,6 +59,10 @@ class PageInspector(HTMLParser):
             self.h1_count += 1
         if tag == "meta" and attr_map.get("name") == "description":
             self.meta_descriptions.append(attr_map.get("content") or "")
+        if tag == "meta" and attr_map.get("property") == "og:url":
+            self.og_urls.append(attr_map.get("content") or "")
+        if tag == "link" and attr_map.get("rel") == "canonical":
+            self.canonicals.append(attr_map.get("href") or "")
         if tag == "a":
             self.links.append({k: (v or "") for k, v in attrs})
         if "href" in attr_map and attr_map["href"] is not None:
@@ -343,3 +349,93 @@ def test_home_css_only_viewport_reveal_and_reduced_motion(built_site: tuple[dict
     assert "@media (prefers-reduced-motion: no-preference)" in css
     assert "@media (prefers-reduced-motion: reduce)" in css
     assert "animation: none !important;" in css
+
+
+def test_cv_pdf_copied_valid_and_linked_with_download_attribute(built_site: tuple[dict, list[Path]]) -> None:
+    site, _ = built_site
+    pdf_path = DIST_DIR / "static" / "files" / "Eseoghene_CV.pdf"
+    assert pdf_path.is_file(), f"Missing built CV PDF at {pdf_path}"
+    assert pdf_path.read_bytes().startswith(b"%PDF"), "Eseoghene_CV.pdf does not start with %PDF"
+
+    expected_href = site["cv_link"]
+    assert expected_href == "static/files/Eseoghene_CV.pdf"
+
+    for page_name in ("resume.html", "index.html", "contact.html"):
+        page_file = DIST_DIR / page_name
+        html_text = page_file.read_text(encoding="utf-8")
+        inspector = PageInspector()
+        inspector.feed(html_text)
+        dl_links = [
+            link for link in inspector.links
+            if link.get("href") == expected_href and "download" in link
+        ]
+        assert dl_links, f"Missing CV link with download attribute on {page_name}"
+        for link in dl_links:
+            assert link["download"] == "Eseoghene_Asisisi_CV.pdf"
+            assert link.get("aria-label") == "Download Eseoghene Asisisi's CV as a PDF"
+            assert (page_file.parent / link["href"]).resolve() == pdf_path.resolve()
+
+    resume_html = (DIST_DIR / "resume.html").read_text(encoding="utf-8")
+    assert "Download CV" in resume_html
+    assert "PDF, 3 pages" in resume_html
+    assert "View in browser" in resume_html
+    assert "CV coming soon" not in resume_html
+
+    index_html = (DIST_DIR / "index.html").read_text(encoding="utf-8")
+    contact_html = (DIST_DIR / "contact.html").read_text(encoding="utf-8")
+    assert "Download CV" in index_html
+    assert "Download my CV" in index_html
+    assert "Download my CV" in contact_html
+
+    # Keep header navigation and footer free of CV links
+    for html_file in _all_html_files():
+        text = html_file.read_text(encoding="utf-8")
+        header_html = text.split("<header", 1)[1].split("</header>", 1)[0]
+        footer_html = text.split("<footer", 1)[1].split("</footer>", 1)[0]
+        for region in (header_html, footer_html):
+            assert "Eseoghene_CV.pdf" not in region
+            assert "Download CV" not in region
+            assert "Download my CV" not in region
+
+
+def test_cv_links_hidden_when_cv_link_empty(tmp_path: Path) -> None:
+    site = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    site["cv_link"] = ""
+    tmp_data = tmp_path / "site.json"
+    tmp_data.write_text(json.dumps(site), encoding="utf-8")
+
+    tmp_dist = tmp_path / "dist"
+    build_site(data_path=tmp_data, dist_dir=tmp_dist)
+
+    resume_html = (tmp_dist / "resume.html").read_text(encoding="utf-8")
+    assert "CV coming soon" in resume_html
+    for forbidden in ("Download CV", "Download my CV", "PDF, 3 pages", "View in browser", "Eseoghene_CV.pdf"):
+        assert forbidden not in resume_html
+
+    for html_file in _all_html_files(tmp_dist):
+        if html_file.name == "resume.html":
+            continue
+        content = html_file.read_text(encoding="utf-8")
+        for forbidden in ("Download CV", "Download my CV", "CV coming soon", "Eseoghene_CV.pdf"):
+            assert forbidden not in content, f"Unexpected '{forbidden}' in {html_file}"
+
+
+def test_sitemap_robots_and_canonical_use_netlify_portfolio_url(built_site: tuple[dict, list[Path]]) -> None:
+    expected_base = "https://eseogheneportfolio.netlify.app/"
+    sitemap_xml = (DIST_DIR / "sitemap.xml").read_text(encoding="utf-8")
+    robots_txt = (DIST_DIR / "robots.txt").read_text(encoding="utf-8")
+
+    assert f"<loc>{expected_base}</loc>" in sitemap_xml
+    assert f"<loc>{expected_base}resume.html</loc>" in sitemap_xml
+    assert f"Sitemap: {expected_base}sitemap.xml" in robots_txt
+    assert "giftstack-dev.github.io" not in sitemap_xml
+    assert "giftstack-dev.github.io" not in robots_txt
+
+    for html_file in _all_html_files():
+        content = html_file.read_text(encoding="utf-8")
+        inspector = PageInspector()
+        inspector.feed(content)
+        assert len(inspector.canonicals) == 1, f"Expected 1 canonical tag in {html_file}"
+        assert inspector.canonicals[0].startswith(expected_base), f"Unexpected canonical URL in {html_file}: {inspector.canonicals[0]}"
+        assert len(inspector.og_urls) == 1, f"Expected 1 og:url meta tag in {html_file}"
+        assert inspector.og_urls[0].startswith(expected_base), f"Unexpected og:url in {html_file}: {inspector.og_urls[0]}"

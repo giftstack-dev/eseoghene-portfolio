@@ -6,8 +6,19 @@
   <div class="split-header-panels">
     <div class="split-header-black">
       <div>
-        {% if site.email %}
-        <p><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+        {% if site.email or site.cv_link %}
+        <div class="contact-email-row">
+          {% if site.email %}
+          <p class="contact-email-wrap"><a class="giant-mailto" href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+          {% endif %}
+          {% if site.cv_link %}
+          {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
+          <a class="contact-cv-link" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
+            {{ svg_icon("download", "icon-sm") }}
+            <span>Download my CV</span>
+          </a>
+          {% endif %}
+        </div>
         {% endif %}
         <div class="btn-row">
           {% if site.github %}
