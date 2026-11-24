@@ -5,7 +5,10 @@
 <section class="split-header" aria-label="Project overview">
   <div class="split-header-panels">
     <div class="split-header-black">
-      {{ project_cover(project, root) }}
+      <div class="split-header-bg" aria-hidden="true"></div>
+      <div class="split-header-black-inner">
+        {{ project_cover(project, root) }}
+      </div>
     </div>
     <div class="split-header-grey">
       <div class="container">
@@ -91,8 +94,9 @@
     <nav class="pager-row" aria-label="Adjacent projects">
       {% if prev_project %}
       <a class="pager-card" href="{{ root }}projects/{{ prev_project.slug }}.html">
+        <span class="pager-card-bg" aria-hidden="true"></span>
         {{ svg_icon("arrow-left") }}
-        <span>
+        <span class="pager-text">
           <span class="pager-label">Previous project</span>
           <span class="pager-title">{{ prev_project.title }}</span>
         </span>
@@ -103,7 +107,8 @@
 
       {% if next_project %}
       <a class="pager-card pager-card--next" href="{{ root }}projects/{{ next_project.slug }}.html">
-        <span>
+        <span class="pager-card-bg pager-card-bg--next" aria-hidden="true"></span>
+        <span class="pager-text">
           <span class="pager-label">Next project</span>
           <span class="pager-title">{{ next_project.title }}</span>
         </span>

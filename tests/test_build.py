@@ -371,7 +371,10 @@ def test_cv_pdf_copied_valid_and_linked_with_download_attribute(built_site: tupl
         ]
         assert dl_links, f"Missing CV link with download attribute on {page_name}"
         for link in dl_links:
+            assert "btn" in link.get("class", "").split()
             assert link["download"] == "Eseoghene_Asisisi_CV.pdf"
+            assert link.get("type") == "application/pdf"
+            assert "onclick" not in link
             assert link.get("aria-label") == "Download Eseoghene Asisisi's CV as a PDF"
             assert (page_file.parent / link["href"]).resolve() == pdf_path.resolve()
 
@@ -387,15 +390,87 @@ def test_cv_pdf_copied_valid_and_linked_with_download_attribute(built_site: tupl
     assert "Download my CV" in index_html
     assert "Download my CV" in contact_html
 
-    # Keep header navigation and footer free of CV links
+    # Keep header navigation and footer free of CV links, and ensure header monogram has aria-label="Home"
     for html_file in _all_html_files():
         text = html_file.read_text(encoding="utf-8")
         header_html = text.split("<header", 1)[1].split("</header>", 1)[0]
+        header_inspector = PageInspector()
+        header_inspector.feed(header_html)
+        monogram_links = [
+            link for link in header_inspector.links
+            if "logo-link" in link.get("class", "").split()
+        ]
+        assert monogram_links, f"Missing monogram link in header of {html_file}"
+        assert all(link.get("aria-label") == "Home" for link in monogram_links)
+
         footer_html = text.split("<footer", 1)[1].split("</footer>", 1)[0]
         for region in (header_html, footer_html):
             assert "Eseoghene_CV.pdf" not in region
             assert "Download CV" not in region
             assert "Download my CV" not in region
+
+
+def test_cv_links_have_no_clip_path_ancestors_and_overlays_ignore_pointer_events(built_site: tuple[dict, list[Path]]) -> None:
+    css_text = (STATIC_DIR / "style.css").read_text(encoding="utf-8")
+
+    # Find every class that defines a non-none clip-path on the element itself in static/style.css
+    clip_path_classes: set[str] = set()
+    for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css_text):
+        for prop_match in re.finditer(r"clip-path\s*:\s*([^;]+);", body):
+            val = prop_match.group(1).replace("!important", "").strip().lower()
+            if val == "none":
+                continue
+            for sel in selector.split(","):
+                sel_clean = sel.strip()
+                if sel_clean.endswith(("::before", "::after")):
+                    continue
+                target_part = sel_clean.split()[-1]
+                for cls in re.findall(r"\.([A-Za-z0-9_-]+)", target_part):
+                    clip_path_classes.add(cls)
+
+    class AncestorChecker(HTMLParser):
+        VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.stack: list[tuple[str, set[str]]] = []
+
+        def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+            attr_map = dict(attrs)
+            classes = set((attr_map.get("class") or "").split())
+            if tag == "a":
+                href = attr_map.get("href") or ""
+                if href.endswith(".pdf") or "download" in attr_map:
+                    # Must not be wrapped inside another <a>
+                    assert not any(t == "a" for t, _ in self.stack), "CV link nested inside another <a>"
+                    for anc_tag, anc_classes in self.stack:
+                        bad = anc_classes & clip_path_classes
+                        assert not bad, f"CV link ({href}) nested inside <{anc_tag}> with clip-path class(es): {bad}"
+                    assert not (classes & clip_path_classes), f"CV link itself has clip-path class: {classes & clip_path_classes}"
+            if tag not in self.VOID_TAGS:
+                self.stack.append((tag, classes))
+
+        def handle_endtag(self, tag: str) -> None:
+            while self.stack:
+                popped_tag, _ = self.stack.pop()
+                if popped_tag == tag:
+                    break
+
+    for html_file in _all_html_files():
+        checker = AncestorChecker()
+        checker.feed(html_file.read_text(encoding="utf-8"))
+
+    # Every decorative pseudo-element overlay covering a panel must have pointer-events: none
+    pseudo_rules_checked = 0
+    for selector, body in re.findall(r"([^{}@]+)\{([^{}]*)\}", css_text):
+        if "::before" not in selector and "::after" not in selector:
+            continue
+        if "position: absolute" in body or "inset: 0" in body:
+            pseudo_rules_checked += 1
+            assert re.search(r"pointer-events\s*:\s*none", body), (
+                f"Decorative pseudo-element rule missing pointer-events: none: {selector.strip()}"
+            )
+    assert pseudo_rules_checked >= 5
 
 
 def test_cv_links_hidden_when_cv_link_empty(tmp_path: Path) -> None:

@@ -5,7 +5,8 @@
 <section class="split-header" aria-label="Contact header">
   <div class="split-header-panels">
     <div class="split-header-black">
-      <div>
+      <div class="split-header-bg" aria-hidden="true"></div>
+      <div class="split-header-black-inner">
         {% if site.email or site.cv_link %}
         <div class="contact-email-row">
           {% if site.email %}
@@ -13,7 +14,7 @@
           {% endif %}
           {% if site.cv_link %}
           {% set cv_href = site.cv_link if site.cv_link.startswith(('http://', 'https://')) else (root ~ site.cv_link) %}
-          <a class="contact-cv-link" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
+          <a class="btn contact-cv-link" href="{{ cv_href }}" download="Eseoghene_Asisisi_CV.pdf" type="application/pdf" aria-label="Download Eseoghene Asisisi's CV as a PDF">
             {{ svg_icon("download", "icon-sm") }}
             <span>Download my CV</span>
           </a>
